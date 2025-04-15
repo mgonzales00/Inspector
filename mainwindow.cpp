@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <cstddef>
+#include <QString>
 
 void MainWindow::Debug(QString title, QString text)
 {
@@ -36,7 +37,7 @@ void MainWindow::on_pushButton_clicked()
     if (fileName.isEmpty())
     {
         Debug("Error", "Please select a file.");
-        return;
+        on_actionOpenFile_triggered();
     }
 
     // Open file
@@ -88,7 +89,7 @@ void MainWindow::on_pushButton_clicked()
 }
 
 // Add row to table
-void AddTableRow(QTableWidget* table, int row, int column, DWORD_PTR value, size_t offset, size_t size)
+void AddTableRow(QTableWidget* table, int row, int column, BYTE value, size_t offset, size_t size)
 {
     table->setItem(row, column, new QTableWidgetItem(QString("0x%1").arg(value, 0, 16)));
     table->setItem(row, column + 1, new QTableWidgetItem(QString("0x%1").arg(offset, 0, 16)));
@@ -97,18 +98,25 @@ void AddTableRow(QTableWidget* table, int row, int column, DWORD_PTR value, size
 
 // 32-bit images
 void MainWindow::ParseImage32(LPVOID imageBase)
-{
+{   
+    //PIMAGE_SECTION_HEADER sectionHeader = {};
+    //PIMAGE_SECTION_HEADER importSection = {};
+    //IMAGE_IMPORT_DESCRIPTOR* importDescriptor = {};
+    //PIMAGE_THUNK_DATA thunkData = {};
+    //DWORD thunk = {};
+    //DWORD rawOffset = {};
+
     // Grab DOS header from within image
     PIMAGE_DOS_HEADER imageDOSHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(imageBase);
 
     // Grab NT header
-    PIMAGE_NT_HEADERS imageNTHeaders = reinterpret_cast<PIMAGE_NT_HEADERS>(reinterpret_cast<DWORD_PTR>(imageDOSHeader) + imageDOSHeader->e_lfanew); // e_lfanew is the offset in bytes from the beginning of the DOS header to the NT headers
+    PIMAGE_NT_HEADERS32 imageNTHeaders = reinterpret_cast<PIMAGE_NT_HEADERS32>(reinterpret_cast<DWORD_PTR>(imageDOSHeader) + imageDOSHeader->e_lfanew); // e_lfanew is the offset in bytes from the beginning of the DOS header to the NT headers
 
     // Grab file header
     IMAGE_FILE_HEADER imageFileHeader = imageNTHeaders->FileHeader;
 
     // Grab optional header
-    IMAGE_OPTIONAL_HEADER imageOptionalHeader = imageNTHeaders->OptionalHeader;
+    IMAGE_OPTIONAL_HEADER32 imageOptionalHeader = imageNTHeaders->OptionalHeader;
 
     // Grab section header
     PIMAGE_SECTION_HEADER imageSectionHeader = reinterpret_cast<PIMAGE_SECTION_HEADER>(reinterpret_cast<DWORD_PTR>(imageNTHeaders) + 0x04 + sizeof(IMAGE_FILE_HEADER) + imageFileHeader.SizeOfOptionalHeader); // +0x04 to skip NT signature
@@ -182,22 +190,22 @@ void MainWindow::ParseImage32(LPVOID imageBase)
 
     // DATA_DIRECTORIES
     // EXPORT DIRECTORY ADDRESS
-    AddTableRow(ui->optionalHeaderTableWidget, 0, 0,
+    AddTableRow(ui->dataDirectoriesTableWidget, 0, 0,
         imageNTHeaders->OptionalHeader.DataDirectory[0].VirtualAddress,
         offsetof(IMAGE_OPTIONAL_HEADER, DataDirectory) + 0 * sizeof(IMAGE_DATA_DIRECTORY) + offsetof(IMAGE_DATA_DIRECTORY, VirtualAddress),
         sizeof(imageNTHeaders->OptionalHeader.DataDirectory[0].VirtualAddress)
         );
 
     // IMPORT DIRECTORY ADDRESS
-    AddTableRow(ui->optionalHeaderTableWidget, 1, 0,
+    AddTableRow(ui->dataDirectoriesTableWidget, 1, 0,
         imageNTHeaders->OptionalHeader.DataDirectory[1].VirtualAddress,
         offsetof(IMAGE_OPTIONAL_HEADER, DataDirectory) + 1 * sizeof(IMAGE_DATA_DIRECTORY) + offsetof(IMAGE_DATA_DIRECTORY, VirtualAddress),
         sizeof(imageNTHeaders->OptionalHeader.DataDirectory[1].VirtualAddress)
         );
 
-    /*
     // SECTION_HEADERS
     // We want the address right after the optional header as the first section header starts there
+    /*
     DWORD sectionLocation =
         reinterpret_cast<uintptr_t>(imageNTHeaders) + // Start at PE headers
         sizeof(DWORD) +  // Skip the PE signature
@@ -208,14 +216,109 @@ void MainWindow::ParseImage32(LPVOID imageBase)
     // Offset to the import directory RVA
     DWORD importDirectoryRVA = imageNTHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress;
 
+    PBYTE sectionBase = reinterpret_cast<BYTE*>(imageNTHeaders) +
+                        sizeof(DWORD) + sizeof(IMAGE_FILE_HEADER) +
+                        imageNTHeaders->FileHeader.SizeOfOptionalHeader;
 
-    PIMAGE_SECTION_HEADER sectionHeader = {};
     for (int i = 0; i < imageNTHeaders->FileHeader.NumberOfSections; i++)
     {
-        sectionHeader = reinterpret_cast<PIMAGE_SECTION_HEADER>(sectionLocation);
-    }
-*/
+        sectionHeader = reinterpret_cast<PIMAGE_SECTION_HEADER>(sectionBase + i * sizeof(IMAGE_SECTION_HEADER));
 
+        // From BYTE* -> char*
+        QString sectionNameStr = QString::fromLatin1(reinterpret_cast<const char*>(sectionHeader->Name), 8).trimmed();
+        QString virtualSizeStr = QString("0x%1").arg(sectionHeader->Misc.VirtualSize, 0, 16);
+        QString virtualAddrStr = QString("0x%1").arg(sectionHeader->VirtualAddress, 0, 16);
+        QString sizeOfRawDataStr = QString("0x%1").arg(sectionHeader->SizeOfRawData, 0, 16);
+        QString ptrToRawDataStr = QString("0x%1").arg(sectionHeader->PointerToRawData, 0, 16);
+        QString ptrToRelocStr = QString("0x%1").arg(sectionHeader->PointerToRelocations, 0, 16);
+        QString ptrToLineNumStr = QString("0x%1").arg(sectionHeader->PointerToLinenumbers, 0, 16);
+        QString numOfLineNum = QString("0x%1").arg(sectionHeader->NumberOfLinenumbers, 0, 16);
+        QString numOfRelocStr = QString("0x%1").arg(sectionHeader->NumberOfRelocations, 0, 16);
+        QString characterStr = QString("0x%1").arg(sectionHeader->Characteristics, 0, 16);
+
+        // Create a single list item for all the strings (combining all section info into one string)
+        QString sectionInfo = QString(
+                                  "Name: %1\n"
+                                  "Virtual Size: %2\n"
+                                  "Virtual Address: %3\n"
+                                  "Size of Raw Data: %4\n"
+                                  "Pointer to Raw Data: %5\n"
+                                  "Pointer to Relocations: %6\n"
+                                  "Pointer to Line Numbers: %7\n"
+                                  "Number of Line Numbers: %8\n"
+                                  "Number of Relocations: %9\n"
+                                  "Characteristics: %10\n")
+                                  .arg(sectionNameStr)
+                                  .arg(virtualSizeStr)
+                                  .arg(virtualAddrStr)
+                                  .arg(sizeOfRawDataStr)
+                                  .arg(ptrToRawDataStr)
+                                  .arg(ptrToRelocStr)
+                                  .arg(ptrToLineNumStr)
+                                  .arg(numOfLineNum)
+                                  .arg(numOfRelocStr)
+                                  .arg(characterStr);
+
+        // Create the list item and add it to the list view
+        QListWidgetItem* item = new QListWidgetItem(sectionInfo);
+        ui->sectionHeaderListWidget->addItem(item);
+
+        // Check if import directory is within range of .text section
+        // we want to make sure the import directory RVA is greater than the base address of the .text section AND that it's below the end of the .text section
+        if (importDirectoryRVA >= sectionHeader->VirtualAddress &&
+            importDirectoryRVA < (sectionHeader->VirtualAddress + sectionHeader->Misc.VirtualSize))
+        {
+            importSection = sectionHeader;
+        }
+        sectionLocation += sectionSize;
+    }
+
+    if (importSection == nullptr) {
+        Debug("Alert", "Import section is null.");
+        return;
+    }
+
+    // Get file offset to import table
+    rawOffset = reinterpret_cast<BYTE*>(imageBase) + importSection->PointerToRawData;
+
+    // Get pointer to import descriptor's file offset.
+    // fileOffset = imageBaseAddress + pointerToRawDataOfTheSectionContainingRVAofInterest + (RVAofInterest - SectionContainingRVAofInterest.VirtualAddress)
+    // Import descriptor represents one DLL that the exe imports functions from.
+    // Contains:
+    // - Name - Points to the DLL name string
+    // - OriginalFirstThunk - Points to an array of IMAGE_THUNK_DATA which represents a function the exe uses from that DLL
+    // - FirstThunk - Points to an array of pointers, whose initial values are a copy of the values pointed to by OriginalFirstThunk
+    //      - When the DLL is loaded, those initial values in the FirstThunk table are replaced by the actual function pointers determined at runtime.
+    // Thunks are placeholders (pointers) for imported function addresses
+    // Import address table and
+    importDescriptor = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(
+        rawOffset + (importDirectoryRVA - importSection->VirtualAddress));
+
+    QString dllImportTitleStr = "****** FUNCTION IMPORTS ******";
+    QListWidgetItem* item = new QListWidgetItem(dllImportTitleStr);
+    ui->sectionHeaderListWidget->addItem(item);
+
+    for (; importDescriptor->Name != 0; importDescriptor++)
+    {
+        const char* dllName = reinterpret_cast<const char*>(
+            reinterpret_cast<BYTE*>(imageBase) + importDescriptor->Name);
+
+        QListWidgetItem* dllItem = new QListWidgetItem(QString("DLL: %1").arg(dllName));
+        ui->sectionHeaderListWidget->addItem(dllItem);
+
+        PIMAGE_THUNK_DATA thunkILT = reinterpret_cast<PIMAGE_THUNK_DATA>(
+            reinterpret_cast<BYTE*>(imageBase) + importDescriptor->OriginalFirstThunk);
+
+        for (; thunkILT->u1.AddressOfData != 0; ++thunkILT)
+        {
+            PIMAGE_IMPORT_BY_NAME importByName = reinterpret_cast<PIMAGE_IMPORT_BY_NAME>(
+                reinterpret_cast<BYTE*>(imageBase) + thunkILT->u1.AddressOfData);
+
+            QListWidgetItem* funcItem = new QListWidgetItem(QString("    %1").arg(importByName->Name));
+            ui->sectionHeaderListWidget->addItem(funcItem);
+        }
+    }
+    */
 }
 
 // 64-bit images
