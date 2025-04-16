@@ -89,7 +89,9 @@ void MainWindow::on_pushButton_clicked()
 }
 
 // Add row to table
-void AddTableRow(QTableWidget* table, int row, int column, BYTE value, size_t offset, size_t size)
+// 32 bit everything is DWORD or smaller, 64 bit everything is UNSIGNED LONG LONG or smaller
+// Upcasting makes it possible for this to work with both 32 and 64 bit values
+void AddTableRow(QTableWidget* table, int row, int column, unsigned long long value, size_t offset, size_t size)
 {
     table->setItem(row, column, new QTableWidgetItem(QString("0x%1").arg(value, 0, 16)));
     table->setItem(row, column + 1, new QTableWidgetItem(QString("0x%1").arg(offset, 0, 16)));
