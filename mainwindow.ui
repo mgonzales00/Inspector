@@ -91,7 +91,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -319,7 +319,7 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
-         <widget class="QTableWidget" name="tableWidget_2">
+         <widget class="QTableWidget" name="ntHeadersTableWidget">
           <row>
            <property name="text">
             <string>Signature</string>
@@ -355,7 +355,7 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QTableWidget" name="tableWidget_3">
+         <widget class="QTableWidget" name="fileHeaderTableWidget">
           <row>
            <property name="text">
             <string>Machine</string>
@@ -416,7 +416,7 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_6">
         <item row="0" column="0">
-         <widget class="QTableWidget" name="tableWidget_4">
+         <widget class="QTableWidget" name="optionalHeaderTableWidget">
           <row>
            <property name="text">
             <string>Magic</string>
@@ -597,7 +597,7 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
         <item row="0" column="0">
-         <widget class="QTableWidget" name="tableWidget_5">
+         <widget class="QTableWidget" name="dataDirectoriesTableWidget">
           <row>
            <property name="text">
             <string>Export Directory Address</string>
@@ -636,11 +636,21 @@
        <attribute name="title">
         <string>Section Headers</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="0" column="0">
+         <widget class="QListWidget" name="sectionHeaderListWidget"/>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="dllImportTab">
        <attribute name="title">
         <string>DLL Imports</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_9">
+        <item row="0" column="0">
+         <widget class="QListWidget" name="dllImportListWidget"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -658,6 +668,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionOpenFile"/>
+   <addaction name="actionToggleDarkMode"/>
   </widget>
   <action name="actionOpenFile">
    <property name="icon">
@@ -665,6 +676,20 @@
    </property>
    <property name="text">
     <string>Open file</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionToggleDarkMode">
+   <property name="icon">
+    <iconset theme="QIcon::ThemeIcon::WeatherClear"/>
+   </property>
+   <property name="text">
+    <string>Toggle dark mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle dark/light mode</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

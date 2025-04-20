@@ -1,0 +1,16 @@
+# ninja log v6
+21	116	7662924095117053	Inspector_autogen/timestamp	6ea20ba8feb35556
+21	116	7662924095117053	C:/Users/punk/Documents/Inspector/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/Inspector_autogen/timestamp	6ea20ba8feb35556
+951	3839	7645664460968870	CMakeFiles/Inspector.dir/Inspector_autogen/mocs_compilation.cpp.obj	d7d07434c15de7d3
+117	2478	7662924096078483	CMakeFiles/Inspector.dir/mainwindow.cpp.obj	a20fa25ee30f8d13
+21	116	7662924095117053	Inspector_autogen/mocs_compilation.cpp	6ea20ba8feb35556
+2478	2732	7662924119690812	Inspector.exe	3801d50f4a8de66c
+21	116	7662924095117053	C:/Users/punk/Documents/Inspector/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/Inspector_autogen/mocs_compilation.cpp	6ea20ba8feb35556
+952	3833	7645664460978872	CMakeFiles/Inspector.dir/main.cpp.obj	d08f39af15aff0ff
+15	32	7645664411073184	CMakeFiles/clean.additional	baedbe210acaa455
+20	113	7662926685554330	Inspector_autogen/timestamp	6ea20ba8feb35556
+20	113	7662926685554330	Inspector_autogen/mocs_compilation.cpp	6ea20ba8feb35556
+20	113	7662926685554330	C:/Users/punk/Documents/Inspector/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/Inspector_autogen/timestamp	6ea20ba8feb35556
+20	113	7662926685554330	C:/Users/punk/Documents/Inspector/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/Inspector_autogen/mocs_compilation.cpp	6ea20ba8feb35556
+113	2705	7662926686482052	CMakeFiles/Inspector.dir/mainwindow.cpp.obj	a20fa25ee30f8d13
+2705	2834	7662926712395763	Inspector.exe	3801d50f4a8de66c

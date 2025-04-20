@@ -28,13 +28,18 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_actionToggleDarkMode_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString architecture;
     QString fileName;
+    bool darkModeOn = 1;
 
     void Debug(QString title, QString text);
     void ParseImage32(LPVOID imageBase);
     void ParseImage64(LPVOID imageBase);
+    void setDarkMode();
+    void setLightMode();
 };
 #endif // MAINWINDOW_H
