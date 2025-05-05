@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-RelWithDebInfo-e075463069db3031776e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "RelWithDebInfo",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Inspector",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Inspector::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Inspector-RelWithDebInfo-e2e93c4643aa2b039501.json",
+					"name" : "Inspector",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Inspector_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Inspector_autogen-RelWithDebInfo-5f993196db5568875384.json",
+					"name" : "Inspector_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Inspector_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Inspector_autogen_timestamp_deps-RelWithDebInfo-af3c399b76286acfc8e4.json",
+					"name" : "Inspector_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/punk/Documents/Inspector/build/Desktop_Qt_6_8_0_MinGW_64_bit-Profile",
+		"source" : "C:/Users/punk/Documents/Inspector"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

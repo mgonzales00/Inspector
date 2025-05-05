@@ -18,6 +18,11 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normalon>:/Resources/Inspector.ico</normalon>
+   </iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="minimumSize">
     <size>
@@ -91,7 +96,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -112,13 +117,13 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="dosHeaderTab">
        <attribute name="title">
         <string>DOS Header</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="QTableWidget" name="tableWidget">
+         <widget class="QTableWidget" name="dosHeaderTableWidget">
           <row>
            <property name="text">
             <string>e_magic</string>

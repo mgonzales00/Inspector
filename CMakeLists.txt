@@ -23,6 +23,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Inspector
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        PE32.h
+        PE64.h
+        PE32.cpp
+        debug.h debug.cpp
+        Resources.qrc
+
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Inspector APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
